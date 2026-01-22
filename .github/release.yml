@@ -1,0 +1,54 @@
+# Configuration for automatically generated release notes
+# https://docs.github.com/en/repositories/releasing-projects-on-github/automatically-generated-release-notes
+
+changelog:
+  exclude:
+    labels:
+      - skip-changelog
+      - duplicate
+      - invalid
+    authors:
+      - dependabot
+      - dependabot[bot]
+
+  categories:
+    - title: "🚀 New Features"
+      labels:
+        - enhancement
+        - feature
+
+    - title: "🐛 Bug Fixes"
+      labels:
+        - bug
+        - fix
+        - bugfix
+
+    - title: "📚 Documentation"
+      labels:
+        - documentation
+        - docs
+
+    - title: "🔧 Maintenance"
+      labels:
+        - chore
+        - maintenance
+        - refactor
+
+    - title: "🔒 Security"
+      labels:
+        - security
+
+    - title: "📦 Dependencies"
+      labels:
+        - dependencies
+        - deps
+
+    - title: "🧪 Tests"
+      labels:
+        - test
+        - tests
+        - testing
+
+    - title: "Other Changes"
+      labels:
+        - "*"

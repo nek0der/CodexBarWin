@@ -1,0 +1,10 @@
+<Project>
+  <PropertyGroup>
+    <!-- Version is automatically set by MinVer from Git tags -->
+    <Authors>CodexBarWin Contributors</Authors>
+    <Company>CodexBarWin</Company>
+    <Product>CodexBarWin</Product>
+    <Description>AI coding assistant usage monitor for Windows system tray</Description>
+    <Copyright>Copyright (c) 2025 CodexBarWin Contributors</Copyright>
+  </PropertyGroup>
+</Project>

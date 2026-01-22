@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+  <!-- Fluent UI style 3-bar chart icon (white for dark taskbar) -->
+  <!-- Bar heights: 45%, 70%, 100% -->
+  <rect x="2" y="7.6" width="3" height="5.4" rx="1" fill="white"/>
+  <rect x="6.5" y="4.6" width="3" height="8.4" rx="1" fill="white"/>
+  <rect x="11" y="1" width="3" height="12" rx="1" fill="white"/>
+</svg>

@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <Platforms>x64;ARM64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.*" />
+    <PackageReference Include="MSTest.TestAdapter" Version="4.*" />
+    <PackageReference Include="MSTest.TestFramework" Version="4.*" />
+    <PackageReference Include="Moq" Version="4.*" />
+    <PackageReference Include="AwesomeAssertions" Version="9.*" />
+    <PackageReference Include="coverlet.collector" Version="6.*">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.*" />
+  </ItemGroup>
+
+  <!-- Link source files from main project (no Windows App SDK dependency) -->
+  <ItemGroup>
+    <Compile Include="..\Helpers\AsyncHelper.cs" Link="Linked\AsyncHelper.cs" />
+    <Compile Include="..\Models\AppSettings.cs" Link="Linked\AppSettings.cs" />
+    <Compile Include="..\Models\UsageData.cs" Link="Linked\UsageData.cs" />
+    <Compile Include="..\Models\SetupStatus.cs" Link="Linked\SetupStatus.cs" />
+    <Compile Include="..\Models\ProviderConfig.cs" Link="Linked\ProviderConfig.cs" />
+    <Compile Include="..\Models\AppJsonSerializerContext.cs" Link="Linked\AppJsonSerializerContext.cs" />
+    <Compile Include="..\Services\IWslService.cs" Link="Linked\IWslService.cs" />
+    <Compile Include="..\Services\ICodexBarService.cs" Link="Linked\ICodexBarService.cs" />
+    <Compile Include="..\Services\ISettingsService.cs" Link="Linked\ISettingsService.cs" />
+    <Compile Include="..\Services\ICacheService.cs" Link="Linked\ICacheService.cs" />
+    <Compile Include="..\Services\ISetupChecker.cs" Link="Linked\ISetupChecker.cs" />
+    <Compile Include="..\Services\WslService.cs" Link="Linked\WslService.cs" />
+    <Compile Include="..\Services\CodexBarService.cs" Link="Linked\CodexBarService.cs" />
+    <Compile Include="..\Services\SettingsService.cs" Link="Linked\SettingsService.cs" />
+    <Compile Include="..\Services\CacheService.cs" Link="Linked\CacheService.cs" />
+    <Compile Include="..\Services\SetupChecker.cs" Link="Linked\SetupChecker.cs" />
+  </ItemGroup>
+
+</Project>

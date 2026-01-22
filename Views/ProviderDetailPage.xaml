@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="CodexBarWin.Views.ProviderDetailPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CodexBarWin.Views"
+    xmlns:controls="using:CodexBarWin.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="Transparent">
+
+    <Grid Padding="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>  <!-- Header -->
+            <RowDefinition Height="*"/>     <!-- Content -->
+        </Grid.RowDefinitions>
+
+        <!-- Header: Back button + Provider name + Icon -->
+        <Grid Grid.Row="0" Margin="0,0,0,12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Back button -->
+            <Button
+                Grid.Column="0"
+                x:Name="BackButton"
+                ToolTipService.ToolTip="Back"
+                Click="OnBackClicked"
+                Padding="8"
+                Margin="0,0,8,0"
+                Background="Transparent"
+                BorderBrush="Transparent">
+                <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE72B;" FontSize="14"/>
+            </Button>
+
+            <!-- Provider Icon -->
+            <Viewbox
+                Grid.Column="1"
+                Width="16"
+                Height="16"
+                Margin="0,0,8,0"
+                VerticalAlignment="Center">
+                <PathIcon x:Name="ProviderIcon" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+            </Viewbox>
+
+            <!-- Provider Name -->
+            <TextBlock
+                Grid.Column="2"
+                x:Name="ProviderName"
+                Style="{StaticResource BodyStrongTextBlockStyle}"
+                VerticalAlignment="Center"/>
+        </Grid>
+
+        <!-- Content -->
+        <ScrollViewer Grid.Row="1">
+            <StackPanel Spacing="12">
+
+                <!-- Session Usage -->
+                <Grid
+                    x:Name="SessionSection"
+                    Padding="12"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="6">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Grid.Row="0"
+                        x:Name="SessionSectionTitle"
+                        Text="Session Usage"
+                        Style="{StaticResource CaptionTextBlockStyle}"
+                        FontWeight="SemiBold"
+                        Margin="0,0,0,6"/>
+
+                    <controls:UsageMeter
+                        Grid.Row="1"
+                        x:Name="SessionMeter"
+                        Height="10"/>
+
+                    <Grid Grid.Row="2" Margin="0,6,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock
+                            Grid.Column="0"
+                            x:Name="SessionPercentText"
+                            Style="{StaticResource CaptionTextBlockStyle}"/>
+                        <TextBlock
+                            Grid.Column="1"
+                            x:Name="SessionResetText"
+                            Style="{StaticResource CaptionTextBlockStyle}"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            VerticalAlignment="Center"/>
+                    </Grid>
+                </Grid>
+
+                <!-- Weekly Usage -->
+                <Grid
+                    x:Name="WeeklySection"
+                    Padding="12"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="6"
+                    Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Grid.Row="0"
+                        x:Name="WeeklySectionTitle"
+                        Text="Weekly Usage"
+                        Style="{StaticResource CaptionTextBlockStyle}"
+                        FontWeight="SemiBold"
+                        Margin="0,0,0,6"/>
+
+                    <controls:UsageMeter
+                        Grid.Row="1"
+                        x:Name="WeeklyMeter"
+                        Height="10"/>
+
+                    <Grid Grid.Row="2" Margin="0,6,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock
+                            Grid.Column="0"
+                            x:Name="WeeklyPercentText"
+                            Style="{StaticResource CaptionTextBlockStyle}"/>
+                        <TextBlock
+                            Grid.Column="1"
+                            x:Name="WeeklyResetText"
+                            Style="{StaticResource CaptionTextBlockStyle}"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            VerticalAlignment="Center"/>
+                    </Grid>
+                </Grid>
+
+                <!-- Tertiary Usage (e.g., Sonnet Weekly for Claude) -->
+                <Grid
+                    x:Name="TertiarySection"
+                    Padding="12"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="6"
+                    Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Grid.Row="0"
+                        x:Name="TertiarySectionTitle"
+                        Text="Tertiary Usage"
+                        Style="{StaticResource CaptionTextBlockStyle}"
+                        FontWeight="SemiBold"
+                        Margin="0,0,0,6"/>
+
+                    <controls:UsageMeter
+                        Grid.Row="1"
+                        x:Name="TertiaryMeter"
+                        Height="10"/>
+
+                    <Grid Grid.Row="2" Margin="0,6,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock
+                            Grid.Column="0"
+                            x:Name="TertiaryPercentText"
+                            Style="{StaticResource CaptionTextBlockStyle}"/>
+                        <TextBlock
+                            Grid.Column="1"
+                            x:Name="TertiaryResetText"
+                            Style="{StaticResource CaptionTextBlockStyle}"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            VerticalAlignment="Center"/>
+                    </Grid>
+                </Grid>
+
+                <!-- Details -->
+                <Grid
+                    x:Name="DetailsSection"
+                    Padding="12"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="6">
+                    <StackPanel Spacing="6">
+                        <TextBlock
+                            Text="Details"
+                            Style="{StaticResource CaptionTextBlockStyle}"
+                            FontWeight="SemiBold"
+                            Margin="0,0,0,2"/>
+
+                        <!-- Plan -->
+                        <Grid x:Name="PlanRow" Visibility="Collapsed">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="80"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                Text="Plan"
+                                Style="{StaticResource CaptionTextBlockStyle}"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            <TextBlock
+                                Grid.Column="1"
+                                x:Name="PlanText"
+                                Style="{StaticResource CaptionTextBlockStyle}"/>
+                        </Grid>
+
+                        <!-- Status -->
+                        <Grid x:Name="StatusRow" Visibility="Collapsed">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="80"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                Text="Source"
+                                Style="{StaticResource CaptionTextBlockStyle}"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            <TextBlock
+                                Grid.Column="1"
+                                x:Name="StatusText"
+                                Style="{StaticResource CaptionTextBlockStyle}"/>
+                        </Grid>
+
+                        <!-- Last fetched -->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="80"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                Text="Last fetched"
+                                Style="{StaticResource CaptionTextBlockStyle}"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                            <TextBlock
+                                Grid.Column="1"
+                                x:Name="FetchedAtText"
+                                Style="{StaticResource CaptionTextBlockStyle}"/>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Error Section -->
+                <Grid
+                    x:Name="ErrorSection"
+                    Padding="12"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="6"
+                    Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Header with copy button -->
+                    <Grid Grid.Row="0" Margin="0,0,0,8">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <FontIcon
+                                FontFamily="Segoe Fluent Icons"
+                                Glyph="&#xE7BA;"
+                                FontSize="12"
+                                Foreground="{ThemeResource SystemFillColorCautionBrush}"/>
+                            <TextBlock
+                                Text="Error Log"
+                                Style="{StaticResource CaptionTextBlockStyle}"
+                                FontWeight="SemiBold"/>
+                        </StackPanel>
+                        <Button
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Padding="6,4"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            ToolTipService.ToolTip="Copy to clipboard"
+                            Click="OnCopyError">
+                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE8C8;" FontSize="12"/>
+                        </Button>
+                    </Grid>
+
+                    <!-- Error text (read-only TextBox) -->
+                    <TextBox
+                        Grid.Row="1"
+                        x:Name="ErrorTextBox"
+                        IsReadOnly="True"
+                        TextWrapping="Wrap"
+                        AcceptsReturn="True"
+                        MaxHeight="150"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Padding="0"/>
+                </Grid>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

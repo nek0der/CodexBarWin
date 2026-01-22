@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AppInstaller xmlns="http://schemas.microsoft.com/appx/appinstaller/2021"
+              Uri="https://github.com/nek0der/CodexBarWin/releases/latest/download/CodexBarWin.appinstaller"
+              Version="1.0.0.0">
+
+  <MainPackage Name="CodexBarWin"
+               Version="1.0.0.0"
+               Publisher="CN=CodexBarWin OSS"
+               Uri="https://github.com/nek0der/CodexBarWin/releases/latest/download/CodexBarWin-x64.msix"
+               ProcessorArchitecture="x64"/>
+
+  <UpdateSettings>
+    <OnLaunch HoursBetweenUpdateChecks="24"
+              ShowPrompt="true"
+              UpdateBlocksActivation="false"/>
+    <AutomaticBackgroundTask/>
+    <ForceUpdateFromAnyVersion>true</ForceUpdateFromAnyVersion>
+  </UpdateSettings>
+
+</AppInstaller>

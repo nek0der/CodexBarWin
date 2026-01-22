@@ -1,0 +1,215 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+# Cancel in-progress runs for the same tag
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DOTNET_VERSION: '10.0.x'
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: x64
+            rid: win-x64
+          - platform: ARM64
+            rid: win-arm64
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Required for MinVer
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore dependencies
+        run: dotnet restore CodexBarWin.csproj -p:Platform=${{ matrix.platform }}
+
+      - name: Create self-signed certificate
+        shell: pwsh
+        run: |
+          $cert = New-SelfSignedCertificate `
+            -Type CodeSigningCert `
+            -Subject "CN=CodexBarWin OSS" `
+            -KeyUsage DigitalSignature `
+            -FriendlyName "CodexBarWin Code Signing Certificate" `
+            -CertStoreLocation "Cert:\CurrentUser\My" `
+            -TextExtension @("2.5.29.37={text}1.3.6.1.5.5.7.3.3", "2.5.29.19={text}")
+          
+          $password = ConvertTo-SecureString -String "temp123" -Force -AsPlainText
+          Export-PfxCertificate -Cert "Cert:\CurrentUser\My\$($cert.Thumbprint)" -FilePath CodexBarWin.pfx -Password $password
+          
+          # Export public certificate for users
+          Export-Certificate -Cert "Cert:\CurrentUser\My\$($cert.Thumbprint)" -FilePath CodexBarWin.cer
+
+      - name: Build MSIX package
+        shell: pwsh
+        run: |
+          $version = "${{ github.ref_name }}" -replace '^v', ''
+          $versionParts = $version.Split('.')
+          while ($versionParts.Count -lt 4) { $versionParts += "0" }
+          $appxVersion = $versionParts -join '.'
+          Write-Host "Building with AppxVersion: $appxVersion"
+
+          msbuild CodexBarWin.csproj /p:Configuration=Release /p:Platform=${{ matrix.platform }} /p:UapAppxPackageBuildMode=SideloadOnly /p:AppxBundle=Never /p:AppxPackageDir="AppPackages\" /p:AppxPackageSigningEnabled=false /p:GenerateAppxPackageOnBuild=true /p:PublishReadyToRun=false /p:AppxVersion="$appxVersion"
+
+      - name: Sign MSIX package
+        shell: pwsh
+        run: |
+          $msixPath = Get-ChildItem -Path "AppPackages" -Filter "*.msix" -Recurse | Select-Object -First 1
+          # Find signtool.exe dynamically
+          $signtool = Get-ChildItem -Path "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Filter "signtool.exe" |
+            Where-Object { $_.FullName -match "x64" } |
+            Sort-Object { [version]($_.Directory.Parent.Name -replace '\.0$', '') } -Descending |
+            Select-Object -First 1
+          & $signtool.FullName sign /fd SHA256 /a /f CodexBarWin.pfx /p "temp123" $msixPath.FullName
+
+      - name: Rename and prepare artifacts
+        shell: pwsh
+        run: |
+          $version = "${{ github.ref_name }}"
+          $platform = "${{ matrix.platform }}"
+          $msixPath = Get-ChildItem -Path "AppPackages" -Filter "*.msix" -Recurse | Select-Object -First 1
+
+          Copy-Item $msixPath.FullName -Destination "CodexBarWin-$version-$platform.msix"
+          Copy-Item $msixPath.FullName -Destination "CodexBarWin-$platform.msix"
+          Copy-Item "CodexBarWin.cer" -Destination "CodexBarWin-$version-Certificate.cer"
+
+          # Update .appinstaller with version (only for x64)
+          if ($platform -eq "x64" -and (Test-Path "CodexBarWin.appinstaller")) {
+            $versionNum = $version -replace '^v', ''
+            # Ensure version has 4 parts (e.g., 0.1.0 -> 0.1.0.0)
+            $versionParts = $versionNum.Split('.')
+            while ($versionParts.Count -lt 4) { $versionParts += "0" }
+            $fullVersion = $versionParts -join '.'
+
+            $content = Get-Content "CodexBarWin.appinstaller" -Raw
+            $content = $content -replace 'Version="[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+"', "Version=`"$fullVersion`""
+            $content | Set-Content "CodexBarWin.appinstaller" -NoNewline
+          }
+
+      - name: Generate checksum
+        shell: pwsh
+        run: |
+          $version = "${{ github.ref_name }}"
+          $platform = "${{ matrix.platform }}"
+          $hash = (Get-FileHash "CodexBarWin-$version-$platform.msix" -Algorithm SHA256).Hash.ToLower()
+          "$hash  CodexBarWin-$version-$platform.msix" | Out-File -FilePath "CodexBarWin-$version-$platform.msix.sha256" -Encoding utf8NoBOM
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ matrix.platform }}
+          path: |
+            CodexBarWin-${{ github.ref_name }}-${{ matrix.platform }}.msix
+            CodexBarWin-${{ matrix.platform }}.msix
+            CodexBarWin-${{ github.ref_name }}-${{ matrix.platform }}.msix.sha256
+            CodexBarWin-${{ github.ref_name }}-Certificate.cer
+            CodexBarWin.appinstaller
+          retention-days: 1
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          pattern: release-*
+          merge-multiple: true
+
+      - name: Generate combined checksum file
+        run: |
+          cd artifacts
+          cat *.sha256 > CodexBarWin-${{ github.ref_name }}-checksums.sha256
+          rm -f *.msix.sha256
+
+      - name: Extract release notes from CHANGELOG
+        id: changelog
+        shell: bash
+        run: |
+          VERSION="${{ github.ref_name }}"
+          VERSION_NUM="${VERSION#v}"
+          NOTES=""
+
+          if [ -f "CHANGELOG.md" ]; then
+            # First, try to find the specific version section
+            NOTES=$(awk -v ver="$VERSION_NUM" '
+              /^## \[/ {
+                if (found) exit
+                if ($0 ~ "\\[" ver "\\]") found=1
+                next
+              }
+              found { print }
+            ' CHANGELOG.md)
+
+            # If not found, try [Unreleased] section (for first release)
+            if [ -z "$NOTES" ]; then
+              NOTES=$(awk '
+                /^## \[Unreleased\]/ { found=1; next }
+                /^## \[/ { if (found) exit }
+                found { print }
+              ' CHANGELOG.md)
+            fi
+          fi
+
+          # Fallback to default message
+          if [ -z "$(echo "$NOTES" | tr -d '[:space:]')" ]; then
+            NOTES="Release $VERSION"
+          fi
+
+          # Save to file for multiline support
+          echo "$NOTES" > release_notes.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: release_notes.md
+          files: |
+            artifacts/*.msix
+            artifacts/*.cer
+            artifacts/*.appinstaller
+            artifacts/*-checksums.sha256
+          draft: false
+          prerelease: ${{ contains(github.ref, 'alpha') || contains(github.ref, 'beta') || contains(github.ref, 'rc') }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
