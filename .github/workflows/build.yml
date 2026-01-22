@@ -55,7 +55,7 @@ jobs:
         run: dotnet build CodexBarWin.csproj -c ${{ matrix.configuration }} -p:Platform=${{ matrix.platform }} --no-restore
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: CodexBarWin-${{ matrix.platform }}-${{ matrix.configuration }}
           path: bin/${{ matrix.platform }}/${{ matrix.configuration }}/net8.0-windows10.0.19041.0/

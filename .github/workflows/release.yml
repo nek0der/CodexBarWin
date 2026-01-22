@@ -70,7 +70,7 @@ jobs:
           "$hash  CodexBarWin-$version-$platform.zip" | Out-File -FilePath "CodexBarWin-$version-$platform.zip.sha256" -Encoding utf8NoBOM
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: release-${{ matrix.platform }}
           path: |
