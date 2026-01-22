@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="CodexBarWin.SetupWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CodexBarWin"
+    xmlns:views="using:CodexBarWin.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="CodexBarWin - Setup">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Custom Title Bar -->
+        <Grid x:Name="AppTitleBar" Grid.Row="0" Height="32" Background="Transparent">
+            <TextBlock
+                Text="CodexBarWin - Setup"
+                Style="{StaticResource CaptionTextBlockStyle}"
+                VerticalAlignment="Center"
+                Margin="12,0,0,0"/>
+        </Grid>
+
+        <!-- Content Frame -->
+        <Frame x:Name="ContentFrame" Grid.Row="1"/>
+    </Grid>
+</Window>

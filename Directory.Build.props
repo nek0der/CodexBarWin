@@ -1,0 +1,13 @@
+<Project>
+  <PropertyGroup>
+    <Version>0.1.0</Version>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <FileVersion>0.1.0.0</FileVersion>
+    <InformationalVersion>0.1.0</InformationalVersion>
+    <Authors>CodexBarWin Contributors</Authors>
+    <Company>CodexBarWin</Company>
+    <Product>CodexBarWin</Product>
+    <Description>AI coding assistant usage monitor for Windows system tray</Description>
+    <Copyright>Copyright (c) 2025 CodexBarWin Contributors</Copyright>
+  </PropertyGroup>
+</Project>

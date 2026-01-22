@@ -1,0 +1,150 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+# Cancel in-progress runs for the same tag
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DOTNET_VERSION: '8.0.x'
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [x64, ARM64]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Required for MinVer
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore dependencies
+        run: dotnet restore CodexBarWin.csproj -p:Platform=${{ matrix.platform }}
+
+      - name: Publish
+        run: dotnet publish CodexBarWin.csproj -c Release -p:Platform=${{ matrix.platform }} --self-contained -o publish/${{ matrix.platform }}
+
+      - name: Create ZIP archive
+        shell: pwsh
+        run: |
+          $platform = "${{ matrix.platform }}"
+          $version = "${{ github.ref_name }}"
+          Compress-Archive -Path "publish/$platform/*" -DestinationPath "CodexBarWin-$version-$platform.zip"
+
+      - name: Generate checksum
+        shell: pwsh
+        run: |
+          $version = "${{ github.ref_name }}"
+          $platform = "${{ matrix.platform }}"
+          $hash = (Get-FileHash "CodexBarWin-$version-$platform.zip" -Algorithm SHA256).Hash.ToLower()
+          "$hash  CodexBarWin-$version-$platform.zip" | Out-File -FilePath "CodexBarWin-$version-$platform.zip.sha256" -Encoding utf8NoBOM
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ matrix.platform }}
+          path: |
+            CodexBarWin-${{ github.ref_name }}-${{ matrix.platform }}.zip
+            CodexBarWin-${{ github.ref_name }}-${{ matrix.platform }}.zip.sha256
+          retention-days: 1
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          pattern: release-*
+          merge-multiple: true
+
+      - name: Generate combined checksum file
+        run: |
+          cd artifacts
+          cat *.sha256 > CodexBarWin-${{ github.ref_name }}-checksums.sha256
+          rm -f *.zip.sha256
+
+      - name: Extract release notes from CHANGELOG
+        id: changelog
+        shell: bash
+        run: |
+          VERSION="${{ github.ref_name }}"
+          VERSION_NUM="${VERSION#v}"
+          NOTES=""
+
+          if [ -f "CHANGELOG.md" ]; then
+            # First, try to find the specific version section
+            NOTES=$(awk -v ver="$VERSION_NUM" '
+              /^## \[/ {
+                if (found) exit
+                if ($0 ~ "\\[" ver "\\]") found=1
+                next
+              }
+              found { print }
+            ' CHANGELOG.md)
+
+            # If not found, try [Unreleased] section (for first release)
+            if [ -z "$NOTES" ]; then
+              NOTES=$(awk '
+                /^## \[Unreleased\]/ { found=1; next }
+                /^## \[/ { if (found) exit }
+                found { print }
+              ' CHANGELOG.md)
+            fi
+          fi
+
+          # Fallback to default message
+          if [ -z "$(echo "$NOTES" | tr -d '[:space:]')" ]; then
+            NOTES="Release $VERSION"
+          fi
+
+          # Save to file for multiline support
+          echo "$NOTES" > release_notes.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: release_notes.md
+          files: |
+            artifacts/*.zip
+            artifacts/*-checksums.sha256
+          draft: false
+          prerelease: ${{ contains(github.ref, 'alpha') || contains(github.ref, 'beta') || contains(github.ref, 'rc') }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

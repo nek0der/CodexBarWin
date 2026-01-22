@@ -1,0 +1,18 @@
+# CODEOWNERS - Defines code owners for automatic PR review requests
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owners for everything in the repo
+* @nek0der
+
+# Core application code
+/Models/ @nek0der
+/Services/ @nek0der
+/ViewModels/ @nek0der
+/Views/ @nek0der
+
+# CI/CD and GitHub configuration
+/.github/ @nek0der
+
+# Documentation
+/*.md @nek0der
+/doc/ @nek0der

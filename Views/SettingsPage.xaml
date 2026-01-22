@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="CodexBarWin.Views.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CodexBarWin.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="Transparent">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Main Content -->
+        <ScrollViewer Grid.Row="0" Padding="20,8,20,20">
+            <StackPanel Spacing="4" MaxWidth="600">
+
+                <!-- Appearance Section -->
+                <TextBlock
+                    Text="Appearance"
+                    Style="{StaticResource BodyStrongTextBlockStyle}"
+                    Margin="4,12,0,8"/>
+
+                <!-- Theme Card -->
+                <Grid
+                    Padding="16,12"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                        <TextBlock Text="App theme" Style="{StaticResource BodyTextBlockStyle}"/>
+                        <TextBlock
+                            Text="Select which app theme to display"
+                            Style="{StaticResource CaptionTextBlockStyle}"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                    </StackPanel>
+
+                    <ComboBox
+                        Grid.Column="1"
+                        x:Name="ThemeComboBox"
+                        Width="150"
+                        VerticalAlignment="Center">
+                        <ComboBoxItem Content="Use system setting" Tag="0"/>
+                        <ComboBoxItem Content="Light" Tag="1"/>
+                        <ComboBoxItem Content="Dark" Tag="2"/>
+                    </ComboBox>
+                </Grid>
+
+                <!-- Providers Section -->
+                <TextBlock
+                    Text="Providers"
+                    Style="{StaticResource BodyStrongTextBlockStyle}"
+                    Margin="4,20,0,8"/>
+
+                <!-- Providers Card -->
+                <Grid
+                    Padding="16"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="8">
+                    <StackPanel>
+                        <TextBlock
+                            Text="Choose which providers to show and their display order"
+                            Style="{StaticResource CaptionTextBlockStyle}"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Margin="0,0,0,12"/>
+
+                        <ItemsControl x:Name="ProvidersItemsControl">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,2" Padding="12,10" Background="{ThemeResource SubtleFillColorSecondaryBrush}" CornerRadius="6">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Provider Icon -->
+                                        <Viewbox
+                                            Grid.Column="0"
+                                            Width="16"
+                                            Height="16"
+                                            Margin="0,0,12,0"
+                                            VerticalAlignment="Center">
+                                            <PathIcon Data="{Binding IconPath}" Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+                                        </Viewbox>
+
+                                        <!-- Provider Checkbox -->
+                                        <CheckBox
+                                            Grid.Column="1"
+                                            Content="{Binding DisplayName}"
+                                            IsChecked="{Binding IsEnabled, Mode=TwoWay}"
+                                            VerticalAlignment="Center"
+                                            MinWidth="100"/>
+
+                                        <!-- Spacer -->
+                                        <Grid Grid.Column="2"/>
+
+                                        <!-- Move Up Button -->
+                                        <Button
+                                            Grid.Column="3"
+                                            ToolTipService.ToolTip="Move up"
+                                            Padding="8,6"
+                                            Margin="4,0"
+                                            Background="Transparent"
+                                            BorderBrush="Transparent"
+                                            Tag="{Binding}"
+                                            Click="OnMoveUpClicked">
+                                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE74A;" FontSize="12"/>
+                                        </Button>
+
+                                        <!-- Move Down Button -->
+                                        <Button
+                                            Grid.Column="4"
+                                            ToolTipService.ToolTip="Move down"
+                                            Padding="8,6"
+                                            Background="Transparent"
+                                            BorderBrush="Transparent"
+                                            Tag="{Binding}"
+                                            Click="OnMoveDownClicked">
+                                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE74B;" FontSize="12"/>
+                                        </Button>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Behavior Section -->
+                <TextBlock
+                    Text="Behavior"
+                    Style="{StaticResource BodyStrongTextBlockStyle}"
+                    Margin="4,20,0,8"/>
+
+                <!-- Refresh Interval Card -->
+                <Grid
+                    Padding="16,12"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="8,8,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                        <TextBlock Text="Refresh interval" Style="{StaticResource BodyTextBlockStyle}"/>
+                        <TextBlock
+                            Text="How often to fetch new usage data"
+                            Style="{StaticResource CaptionTextBlockStyle}"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                    </StackPanel>
+
+                    <ComboBox
+                        Grid.Column="1"
+                        x:Name="RefreshIntervalComboBox"
+                        Width="150"
+                        VerticalAlignment="Center">
+                        <ComboBoxItem Content="1 minute" Tag="60"/>
+                        <ComboBoxItem Content="2 minutes" Tag="120"/>
+                        <ComboBoxItem Content="5 minutes" Tag="300"/>
+                        <ComboBoxItem Content="10 minutes" Tag="600"/>
+                    </ComboBox>
+                </Grid>
+
+                <!-- Start with Windows Card -->
+                <Grid
+                    Padding="16,12"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1,0,1,1"
+                    CornerRadius="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                        <TextBlock Text="Run at startup" Style="{StaticResource BodyTextBlockStyle}"/>
+                        <TextBlock
+                            Text="Start CodexBarWin when you sign in to Windows"
+                            Style="{StaticResource CaptionTextBlockStyle}"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                    </StackPanel>
+
+                    <ToggleSwitch
+                        Grid.Column="1"
+                        x:Name="StartWithWindowsToggle"
+                        OnContent=""
+                        OffContent=""
+                        VerticalAlignment="Center"/>
+                </Grid>
+
+                <!-- Start Minimized Card -->
+                <Grid
+                    Padding="16,12"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1,0,1,1"
+                    CornerRadius="0,0,8,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                        <TextBlock Text="Start minimized" Style="{StaticResource BodyTextBlockStyle}"/>
+                        <TextBlock
+                            Text="Minimize to system tray on startup"
+                            Style="{StaticResource CaptionTextBlockStyle}"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                    </StackPanel>
+
+                    <ToggleSwitch
+                        Grid.Column="1"
+                        x:Name="StartMinimizedToggle"
+                        OnContent=""
+                        OffContent=""
+                        VerticalAlignment="Center"/>
+                </Grid>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Footer with Save/Cancel buttons -->
+        <Border
+            Grid.Row="1"
+            Padding="20,12"
+            Background="{ThemeResource LayerFillColorDefaultBrush}"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,1,0,0">
+            <StackPanel
+                Orientation="Horizontal"
+                HorizontalAlignment="Right"
+                Spacing="8">
+                <Button
+                    x:Name="CancelButton"
+                    Content="Cancel"
+                    MinWidth="100"
+                    Click="OnCancelClicked"/>
+                <Button
+                    x:Name="SaveButton"
+                    Content="Save"
+                    MinWidth="100"
+                    Style="{StaticResource AccentButtonStyle}"
+                    Click="OnSaveClicked"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Page>

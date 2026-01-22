@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "CodexBarWin (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "CodexBarWin (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
