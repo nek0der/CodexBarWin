@@ -75,6 +75,22 @@ jobs:
           # Export public certificate for users
           Export-Certificate -Cert "Cert:\CurrentUser\My\$($cert.Thumbprint)" -FilePath CodexBarWin.cer
 
+      - name: Update Package.appxmanifest version
+        shell: pwsh
+        run: |
+          $version = "${{ github.ref_name }}" -replace '^v', ''
+          $versionParts = $version.Split('.')
+          while ($versionParts.Count -lt 4) { $versionParts += "0" }
+          $appxVersion = $versionParts -join '.'
+          Write-Host "Setting version to: $appxVersion"
+
+          # Update Package.appxmanifest
+          $manifestPath = "Package.appxmanifest"
+          $content = Get-Content $manifestPath -Raw
+          $content = $content -replace 'Version="[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+"', "Version=`"$appxVersion`""
+          Set-Content $manifestPath $content -NoNewline
+          Write-Host "Updated Package.appxmanifest with version $appxVersion"
+
       - name: Build MSIX package
         shell: pwsh
         run: |
