@@ -84,10 +84,10 @@ jobs:
           $appxVersion = $versionParts -join '.'
           Write-Host "Setting version to: $appxVersion"
 
-          # Update Package.appxmanifest
+          # Update Package.appxmanifest (only Identity Version, not MinVersion)
           $manifestPath = "Package.appxmanifest"
           $content = Get-Content $manifestPath -Raw
-          $content = $content -replace 'Version="[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+"', "Version=`"$appxVersion`""
+          $content = $content -replace '(<Identity[^>]*Version=")[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+"', "`${1}$appxVersion`""
           Set-Content $manifestPath $content -NoNewline
           Write-Host "Updated Package.appxmanifest with version $appxVersion"
 
