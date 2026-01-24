@@ -375,6 +375,36 @@ public class SettingsServiceTests
         service2.Settings.Timeouts.CliProviderFirstFetchTimeoutSeconds.Should().Be(90);
     }
 
+    [TestMethod]
+    public async Task SaveAndLoad_DeveloperMode_RoundTrip_PreservesValue()
+    {
+        // Arrange
+        var service = new TestableSettingsService(_mockLogger.Object, _testDirectory);
+        service.Settings.DeveloperModeEnabled = true;
+
+        // Act
+        await service.SaveAsync();
+        var service2 = new TestableSettingsService(_mockLogger.Object, _testDirectory);
+        await service2.LoadAsync();
+
+        // Assert
+        service2.Settings.DeveloperModeEnabled.Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void Reset_RestoresDeveloperModeToFalse()
+    {
+        // Arrange
+        var service = new TestableSettingsService(_mockLogger.Object, _testDirectory);
+        service.Settings.DeveloperModeEnabled = true;
+
+        // Act
+        service.Reset();
+
+        // Assert
+        service.Settings.DeveloperModeEnabled.Should().BeFalse();
+    }
+
     #endregion
 
     #region Provider Security Filtering Tests

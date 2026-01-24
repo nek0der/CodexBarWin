@@ -61,6 +61,7 @@ public sealed partial class SettingsPage : Page
 
         StartWithWindowsToggle.IsOn = ViewModel.StartWithWindows;
         StartMinimizedToggle.IsOn = ViewModel.StartMinimized;
+        DeveloperModeToggle.IsOn = ViewModel.DeveloperModeEnabled;
     }
 
     private async void OnSaveClicked(object sender, RoutedEventArgs e)
@@ -82,6 +83,7 @@ public sealed partial class SettingsPage : Page
 
             ViewModel.StartWithWindows = StartWithWindowsToggle.IsOn;
             ViewModel.StartMinimized = StartMinimizedToggle.IsOn;
+            ViewModel.DeveloperModeEnabled = DeveloperModeToggle.IsOn;
 
             await ViewModel.SaveCommand.ExecuteAsync(null);
 

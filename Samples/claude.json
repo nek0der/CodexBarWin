@@ -1,0 +1,33 @@
+[
+  {
+    "version": "2.1.12",
+    "provider": "claude",
+    "source": "oauth",
+    "usage": {
+      "loginMethod": "Claude Max",
+      "identity": {
+        "providerID": "claude",
+        "loginMethod": "Claude Max"
+      },
+      "primary": {
+        "usedPercent": 35,
+        "windowMinutes": 300,
+        "resetsAt": "2026-01-24T20:00:00Z",
+        "resetDescription": "Jan 25 at 5:00AM"
+      },
+      "secondary": {
+        "usedPercent": 22,
+        "windowMinutes": 10080,
+        "resetsAt": "2026-01-30T16:00:00Z",
+        "resetDescription": "Jan 31 at 1:00AM"
+      },
+      "tertiary": {
+        "usedPercent": 8,
+        "windowMinutes": 10080,
+        "resetsAt": "2026-01-29T16:00:00Z",
+        "resetDescription": "Jan 30 at 1:00AM"
+      },
+      "updatedAt": "2026-01-24T15:15:00Z"
+    }
+  }
+]

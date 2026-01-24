@@ -46,6 +46,16 @@
     <Content Include="Assets\app-dark.ico" />
   </ItemGroup>
 
+  <!-- Sample data for Developer Mode -->
+  <ItemGroup>
+    <Content Include="Samples\*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Samples\README.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
   <ItemGroup>
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>

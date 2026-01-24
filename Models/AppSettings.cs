@@ -48,6 +48,7 @@ public class AppSettings
     public TimeoutSettings Timeouts { get; set; } = new();
     public AnimationSettings Animation { get; set; } = new();
     public string CodexBarGuideUrl { get; set; } = "https://github.com/steipete/CodexBar#installation";
+    public bool DeveloperModeEnabled { get; set; } = false;
 
     /// <summary>
     /// Gets the default settings.
@@ -62,6 +63,7 @@ public class AppSettings
         CacheExpiryMinutes = 5,
         Timeouts = new TimeoutSettings(),
         Animation = new AnimationSettings(),
-        CodexBarGuideUrl = "https://github.com/steipete/CodexBar#installation"
+        CodexBarGuideUrl = "https://github.com/steipete/CodexBar#installation",
+        DeveloperModeEnabled = false
     };
 }
