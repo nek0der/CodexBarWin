@@ -30,6 +30,9 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private int _selectedThemeIndex;
 
+    [ObservableProperty]
+    private bool _developerModeEnabled;
+
     public event EventHandler? SaveRequested;
     public event EventHandler? CancelRequested;
 
@@ -64,6 +67,7 @@ public partial class SettingsViewModel : ObservableObject
         StartWithWindows = settings.StartWithWindows;
         StartMinimized = settings.StartMinimized;
         SelectedThemeIndex = (int)settings.Theme;
+        DeveloperModeEnabled = settings.DeveloperModeEnabled;
     }
 
     [RelayCommand]
@@ -116,6 +120,7 @@ public partial class SettingsViewModel : ObservableObject
         settings.StartWithWindows = StartWithWindows;
         settings.StartMinimized = StartMinimized;
         settings.Theme = (AppTheme)SelectedThemeIndex;
+        settings.DeveloperModeEnabled = DeveloperModeEnabled;
 
         await _settingsService.SaveAsync();
 

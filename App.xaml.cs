@@ -197,6 +197,7 @@ public partial class App : Application
         services.AddSingleton<ICodexBarService, CodexBarService>();
         services.AddSingleton<ISettingsService, SettingsService>();
         services.AddSingleton<ISetupChecker, SetupChecker>();
+        services.AddSingleton<ISampleDataLoader, SampleDataLoader>();
 
         // ViewModels
         services.AddSingleton<MainViewModel>();

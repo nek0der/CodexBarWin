@@ -12,6 +12,7 @@ public class CodexBarService : ICodexBarService
     private readonly IWslService _wslService;
     private readonly ICacheService _cacheService;
     private readonly ISettingsService _settingsService;
+    private readonly ISampleDataLoader _sampleDataLoader;
     private readonly ILogger<CodexBarService> _logger;
 
 
@@ -19,11 +20,13 @@ public class CodexBarService : ICodexBarService
         IWslService wslService,
         ICacheService cacheService,
         ISettingsService settingsService,
+        ISampleDataLoader sampleDataLoader,
         ILogger<CodexBarService> logger)
     {
         _wslService = wslService;
         _cacheService = cacheService;
         _settingsService = settingsService;
+        _sampleDataLoader = sampleDataLoader;
         _logger = logger;
     }
 
@@ -123,6 +126,34 @@ public class CodexBarService : ICodexBarService
         {
             // Validate provider (defense in depth)
             var normalizedProvider = ProviderConstants.ValidateAndNormalize(provider);
+
+            // Developer mode: Use sample data instead of WSL
+            if (_settingsService.Settings.DeveloperModeEnabled)
+            {
+                _logger.LogDebug("Developer mode: Loading sample data for {Provider}", normalizedProvider);
+                
+                var sampleJson = _sampleDataLoader.LoadSampleJson(normalizedProvider);
+                if (!string.IsNullOrWhiteSpace(sampleJson))
+                {
+                    var dataList = ParseUsageJsonArray(sampleJson);
+                    if (dataList.Count > 0)
+                    {
+                        var data = dataList[0];
+                        _cacheService.Set(data.Provider, data);
+                        _logger.LogDebug("Loaded sample data for {Provider}", normalizedProvider);
+                        return data;
+                    }
+                }
+
+                // Fallback: Sample data not available
+                _logger.LogWarning("Sample data not available for {Provider} (Developer mode)", normalizedProvider);
+                return new UsageData
+                {
+                    Provider = provider,
+                    Error = "Sample data not available (Developer mode)",
+                    FetchedAt = DateTime.UtcNow
+                };
+            }
 
             // Use timeout settings from configuration
             // CLI-based providers (codex, gemini) are slower, especially on first fetch

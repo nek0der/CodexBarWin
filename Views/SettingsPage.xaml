@@ -214,7 +214,7 @@
                     Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                     BorderThickness="1,0,1,1"
-                    CornerRadius="0,0,8,8">
+                    CornerRadius="0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
@@ -231,6 +231,36 @@
                     <ToggleSwitch
                         Grid.Column="1"
                         x:Name="StartMinimizedToggle"
+                        OnContent=""
+                        OffContent=""
+                        MinWidth="0"
+                        Margin="0,-4,0,-4"
+                        VerticalAlignment="Center"/>
+                </Grid>
+
+                <!-- Developer Mode Card -->
+                <Grid
+                    Padding="16,12"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1,0,1,1"
+                    CornerRadius="0,0,8,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                        <TextBlock Text="Developer mode" Style="{StaticResource BodyTextBlockStyle}"/>
+                        <TextBlock
+                            Text="Use sample data instead of CodexBar CLI (for testing)"
+                            Style="{StaticResource CaptionTextBlockStyle}"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                    </StackPanel>
+
+                    <ToggleSwitch
+                        Grid.Column="1"
+                        x:Name="DeveloperModeToggle"
                         OnContent=""
                         OffContent=""
                         MinWidth="0"

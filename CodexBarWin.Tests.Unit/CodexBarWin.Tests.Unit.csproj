@@ -35,11 +35,13 @@
     <Compile Include="..\Services\ISettingsService.cs" Link="Linked\ISettingsService.cs" />
     <Compile Include="..\Services\ICacheService.cs" Link="Linked\ICacheService.cs" />
     <Compile Include="..\Services\ISetupChecker.cs" Link="Linked\ISetupChecker.cs" />
+    <Compile Include="..\Services\ISampleDataLoader.cs" Link="Linked\ISampleDataLoader.cs" />
     <Compile Include="..\Services\WslService.cs" Link="Linked\WslService.cs" />
     <Compile Include="..\Services\CodexBarService.cs" Link="Linked\CodexBarService.cs" />
     <Compile Include="..\Services\SettingsService.cs" Link="Linked\SettingsService.cs" />
     <Compile Include="..\Services\CacheService.cs" Link="Linked\CacheService.cs" />
     <Compile Include="..\Services\SetupChecker.cs" Link="Linked\SetupChecker.cs" />
+    <Compile Include="..\Services\SampleDataLoader.cs" Link="Linked\SampleDataLoader.cs" />
   </ItemGroup>
 
 </Project>

@@ -13,6 +13,7 @@ public class CodexBarServiceTests
     private MockWslService _mockWslService = null!;
     private MockCacheService _mockCacheService = null!;
     private MockSettingsService _mockSettingsService = null!;
+    private MockSampleDataLoader _mockSampleDataLoader = null!;
     private Mock<ILogger<CodexBarService>> _mockLogger = null!;
     private CodexBarService _service = null!;
 
@@ -22,12 +23,14 @@ public class CodexBarServiceTests
         _mockWslService = new MockWslService();
         _mockCacheService = new MockCacheService();
         _mockSettingsService = new MockSettingsService();
+        _mockSampleDataLoader = new MockSampleDataLoader();
         _mockLogger = new Mock<ILogger<CodexBarService>>();
 
         _service = new CodexBarService(
             _mockWslService,
             _mockCacheService,
             _mockSettingsService,
+            _mockSampleDataLoader,
             _mockLogger.Object);
     }
 
@@ -242,4 +245,71 @@ public class CodexBarServiceTests
         // Assert
         _mockCacheService.SetCallCount.Should().Be(1);
     }
+
+    #region Developer Mode Tests
+
+    [TestMethod]
+    public async Task GetAllUsageAsync_DeveloperModeEnabled_UsesSampleData()
+    {
+        // Arrange
+        _mockSettingsService.Settings.DeveloperModeEnabled = true;
+        _mockSettingsService.SetProviders(new List<ProviderConfig>
+        {
+            new() { Id = "claude", IsEnabled = true },
+            new() { Id = "gemini", IsEnabled = true }
+        });
+
+        var claudeSample = """[{"provider":"claude","usage":{"primary":{"usedPercent":45.5,"windowMinutes":60}}}]""";
+        var geminiSample = """[{"provider":"gemini","usage":{"primary":{"usedPercent":32.8,"windowMinutes":60}}}]""";
+        _mockSampleDataLoader.SetSampleData("claude", claudeSample);
+        _mockSampleDataLoader.SetSampleData("gemini", geminiSample);
+
+        // Act
+        var results = await _service.GetAllUsageAsync();
+
+        // Assert
+        results.Should().HaveCount(2);
+        _mockWslService.ExecutedCommands.Should().BeEmpty(); // Should NOT execute WSL commands
+        _mockCacheService.SetCallCount.Should().Be(2); // Should cache sample data
+    }
+
+    [TestMethod]
+    public async Task GetAllUsageAsync_DeveloperModeDisabled_UsesWsl()
+    {
+        // Arrange
+        _mockSettingsService.Settings.DeveloperModeEnabled = false;
+        _mockSettingsService.SetProviders(new List<ProviderConfig>
+        {
+            new() { Id = "claude", IsEnabled = true }
+        });
+
+        // Act
+        var results = await _service.GetAllUsageAsync();
+
+        // Assert
+        _mockWslService.ExecutedCommands.Should().NotBeEmpty(); // Should execute WSL commands
+    }
+
+    [TestMethod]
+    public async Task GetAllUsageAsync_DeveloperMode_SampleFileNotFound_ReturnsError()
+    {
+        // Arrange
+        _mockSettingsService.Settings.DeveloperModeEnabled = true;
+        _mockSettingsService.SetProviders(new List<ProviderConfig>
+        {
+            new() { Id = "claude", IsEnabled = true }
+        });
+
+        // Don't set sample data - simulate file not found
+        _mockSampleDataLoader.SetSampleData("claude", null);
+
+        // Act
+        var results = await _service.GetAllUsageAsync();
+
+        // Assert
+        results.Should().HaveCount(1);
+        results[0].Error.Should().Contain("Sample data not available");
+    }
+
+    #endregion
 }

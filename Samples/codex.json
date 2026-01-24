@@ -1,0 +1,34 @@
+[
+  {
+    "version": "0.87.0",
+    "provider": "codex",
+    "source": "codex-cli",
+    "usage": {
+      "loginMethod": "plus",
+      "accountEmail": "user@example.com",
+      "identity": {
+        "providerID": "codex",
+        "accountEmail": "user@example.com",
+        "loginMethod": "plus"
+      },
+      "primary": {
+        "usedPercent": 42,
+        "windowMinutes": 300,
+        "resetsAt": "2026-01-24T20:00:00Z",
+        "resetDescription": "Jan 25 at 5:00AM"
+      },
+      "secondary": {
+        "usedPercent": 18,
+        "windowMinutes": 10080,
+        "resetsAt": "2026-01-31T04:20:52Z",
+        "resetDescription": "31 Jan 2026 at 1:20 PM"
+      },
+      "updatedAt": "2026-01-24T15:20:53Z"
+    },
+    "credits": {
+      "remaining": 0,
+      "updatedAt": "2026-01-24T15:20:55Z",
+      "events": []
+    }
+  }
+]
