@@ -3,14 +3,8 @@ name: License Check
 on:
   push:
     branches: [main]
-    paths:
-      - '**/*.csproj'
-      - '**/packages.lock.json'
   pull_request:
     branches: [main]
-    paths:
-      - '**/*.csproj'
-      - '**/packages.lock.json'
   workflow_dispatch:
 
 env:
