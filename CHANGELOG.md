@@ -8,7 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- N/A
+- Developer mode for testing without CodexBar CLI
+- Sample JSON data files for Claude, Gemini, and Codex providers
+- Settings toggle to enable/disable developer mode
 
 ### Changed
 - N/A
