@@ -362,8 +362,10 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-# Claude Code
-.claude/
+# Claude Code (ignore personal settings, commit team-shared config)
+.claude/*.local.*
+.claude/settings.local.json
+CLAUDE.local.md
 
 # Serena (MCP coding agent)
 .serena/

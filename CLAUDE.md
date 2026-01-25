@@ -1,75 +1,72 @@
-# CLAUDE.md
+# CodexBarWin
 
-## Project Overview
+Windows 11 WinUI 3 app for AI coding tool usage monitoring. Frontend for [CodexBar CLI](https://github.com/steipete/CodexBar).
 
-CodexBarWin is a Windows 11 native app (WinUI 3) that displays AI coding tool usage limits in the system tray. It's a frontend for [Win-CodexBar CLI](https://github.com/Finesssee/Win-CodexBar).
+## Stack
 
-## Tech Stack
-
-- **Framework**: .NET 10, WinUI 3, Windows App SDK
-- **Architecture**: MVVM (CommunityToolkit.Mvvm)
-- **DI**: Microsoft.Extensions.DependencyInjection
-- **System Tray**: H.NotifyIcon.WinUI
-- **Testing**: MSTest, Moq, FluentAssertions
-
-## Project Structure
-
-```
-CodexBarWin/
-├── Models/          # Data models and DTOs
-├── Services/        # Business logic (IWslService, ICodexBarService, etc.)
-├── ViewModels/      # MVVM ViewModels
-├── Views/           # XAML pages
-├── Helpers/         # Utility classes (AsyncHelper)
-├── Controls/        # Custom UI controls
-└── Assets/          # Images and resources
-```
+.NET 10, WinUI 3, Windows App SDK, MVVM (CommunityToolkit.Mvvm), H.NotifyIcon.WinUI, MSTest/Moq/FluentAssertions
 
 ## Commands
 
 ```bash
-# Build
-dotnet build -c Release -p:Platform=x64
-
-# Run tests
-dotnet test CodexBarWin.Tests.Unit -c Debug -p:Platform=x64
-
-# Restore packages
-dotnet restore CodexBarWin.sln
+dotnet build -c Release -p:Platform=x64                          # Build
+dotnet test CodexBarWin.Tests.Unit -c Debug -p:Platform=x64      # Test
+dotnet restore CodexBarWin.sln                                   # Restore
 ```
 
-## Code Conventions
+## Structure
 
-- **PR titles**: Use prefixes (`Add:`, `Fix:`, `Update:`, `Refactor:`, `Test:`, `Docs:`) - enforced by CI
-- **Async methods**: Use `SafeFireAndForget()` for fire-and-forget, always handle exceptions
-- **Provider validation**: Use `ProviderConstants.ValidateAndNormalize()` for security
-- **Logging**: Use `ILogger<T>`, not `Debug.WriteLine`
-- **Testing**: Services, Models, Helpers への変更時はユニットテスト必須
-  - テストファイル命名: `{対象クラス名}Tests.cs`
-  - テストメソッド命名: `{メソッド名}_{条件}_{期待結果}` 形式
-  - UI層（Views, ViewModels）はテスト対象外
+```
+Services/       - Business logic (IWslService, ICodexBarService)
+Models/         - Data models, DTOs
+ViewModels/     - MVVM ViewModels
+Views/          - XAML pages
+Helpers/        - Utility classes
+```
+
+## Code Style
+
+- **All deliverables in English** (code, comments, commits, docs)
+- **Async**: Use `SafeFireAndForget()`, no bare `async void` except event handlers
+- **Logging**: `ILogger<T>`, not `Debug.WriteLine`
+- **Security**: Use `ProviderConstants.ValidateAndNormalize()` for provider names
+
+## Testing
+
+Required for Services/, Models/, Helpers/ changes. See [.claude/rules/testing.md](.claude/rules/testing.md) for details.
+
+## Pull Requests
+
+**Before creating PR**: Read [.claude/rules/pr-workflow.md](.claude/rules/pr-workflow.md) for validation checklist and process.
+
+PR titles must follow format: `Add:`, `Fix:`, `Update:`, `Refactor:`, `Test:`, `Docs:`, `Remove:`
+
+## Security
+
+Read [.claude/rules/security.md](.claude/rules/security.md) before modifying Services/Models.
+
+Critical rules:
+- NO GPL dependencies (MIT incompatible)
+- NO hardcoded secrets
+- ALWAYS validate provider input
 
 ## Important Files
 
-- `Services/CodexBarService.cs` - Core usage data fetching logic
+- `Services/CodexBarService.cs` - Core usage data fetching
 - `Models/ProviderConfig.cs` - Provider validation (security-critical)
-- `MainWindow.xaml.cs` - System tray and window animation
-- `ViewModels/MainViewModel.cs` - Main UI state management
-
-## Do Not
-
-- Add GPL-licensed dependencies (MIT incompatible)
-- Hardcode secrets or credentials
-- Use `async void` except for event handlers (wrap with try-catch)
-- Skip provider validation when executing WSL commands
-- Merge logic changes to Services/Models/Helpers without corresponding tests
+- `MainWindow.xaml.cs` - System tray, window animation
+- `ViewModels/MainViewModel.cs` - Main UI state
 
 ## CI/CD
 
-- **Build**: `.github/workflows/build.yml`
-- **Test**: `.github/workflows/test.yml`
-- **License Check**: `.github/workflows/licenses.yml`
-- **PR Title**: `.github/workflows/pr-title.yml`
-- **Stale**: `.github/workflows/stale.yml` (auto-close inactive issues/PRs)
+Workflows: build, test, licenses, pr-title, stale
 
-All PRs must pass CI checks before merging. Uses Squash & Merge strategy.
+All PRs must pass CI. Uses Squash & Merge strategy.
+
+## References
+
+- Setup: [CONTRIBUTING.md](CONTRIBUTING.md#development-setup)
+- Architecture: [CONTRIBUTING.md](CONTRIBUTING.md#project-structure)
+- Security Policy: [SECURITY.md](SECURITY.md)
+- PR Template: [.github/pull_request_template.md](.github/pull_request_template.md)
+- Changelog: [CHANGELOG.md](CHANGELOG.md)
