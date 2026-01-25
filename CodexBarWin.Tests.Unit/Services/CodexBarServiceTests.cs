@@ -41,7 +41,7 @@ public class CodexBarServiceTests
         // ParseUsageJson expects a single object, not an array
         var jsonResponse = """{"provider":"claude","usage":{"loginMethod":"test","primary":{"usedPercent":50,"windowMinutes":60}}}""";
         _mockWslService.SetCommandResult(
-            "codexbar --provider claude --format json --source oauth",
+            "codexbar --provider claude --format json --source cli",
             new WslResult { Success = true, Output = jsonResponse, ExitCode = 0 });
 
         // Act
@@ -79,7 +79,7 @@ public class CodexBarServiceTests
         _mockCacheService.PreloadCache("claude", cachedData);
 
         _mockWslService.SetCommandResult(
-            "codexbar --provider claude --format json --source oauth",
+            "codexbar --provider claude --format json --source cli",
             new WslResult { Success = false, Error = "Command failed", ExitCode = 1 });
 
         // Act
@@ -236,7 +236,7 @@ public class CodexBarServiceTests
         // ParseUsageJson expects a single object, not an array
         var jsonResponse = """{"provider":"claude","usage":{"primary":{"usedPercent":75,"windowMinutes":60}}}""";
         _mockWslService.SetCommandResult(
-            "codexbar --provider claude --format json --source oauth",
+            "codexbar --provider claude --format json --source cli",
             new WslResult { Success = true, Output = jsonResponse, ExitCode = 0 });
 
         // Act
