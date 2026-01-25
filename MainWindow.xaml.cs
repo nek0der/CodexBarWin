@@ -1,5 +1,6 @@
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Linq;
 using System.Runtime.InteropServices;
 using CodexBarWin.Models;
 using CodexBarWin.Services;
@@ -234,6 +235,15 @@ public sealed partial class MainWindow : Window
 
     private void OnSettingsRequested(object? sender, EventArgs e)
     {
+        // Check if settings window is already open
+        var existingWindow = App.Windows.OfType<SettingsWindow>().FirstOrDefault();
+        if (existingWindow != null)
+        {
+            existingWindow.Activate();
+            return;
+        }
+
+        // Create and show new settings window
         var settingsWindow = new SettingsWindow();
         settingsWindow.Activate();
     }
