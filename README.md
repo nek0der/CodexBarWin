@@ -16,7 +16,9 @@ This is a WinUI 3 frontend wrapper for [CodexBar CLI](https://github.com/steipet
 
 ## Screenshots
 
-*Screenshots coming soon*
+![CodexBarWin Main Window](docs/images/main-window.png)
+
+*Multi-provider usage monitoring with real-time updates*
 
 ## Features
 
