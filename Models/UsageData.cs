@@ -15,6 +15,7 @@ public record UsageData
     public bool IsStale => DateTime.UtcNow - FetchedAt > TimeSpan.FromMinutes(5);
     public string? Status { get; init; }
     public string? Error { get; init; }
+    public string? ErrorDetail { get; init; }
     public bool IsLoading { get; init; }
 
     public bool HasWeekly => Weekly != null;

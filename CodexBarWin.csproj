@@ -28,6 +28,11 @@
     <None Remove="CodexBarWin.Tests.Unit\**" />
   </ItemGroup>
 
+  <!-- Expose internals to test project -->
+  <ItemGroup>
+    <InternalsVisibleTo Include="CodexBarWin.Tests.Unit" />
+  </ItemGroup>
+
   <!-- Version Management (MinVer) -->
   <PropertyGroup>
     <MinVerTagPrefix>v</MinVerTagPrefix>

@@ -121,7 +121,7 @@ public sealed partial class ProviderDetailPage : Page
         if (_data.HasError)
         {
             ErrorSection.Visibility = Visibility.Visible;
-            ErrorTextBox.Text = _data.Error ?? string.Empty;
+            ErrorTextBox.Text = _data.ErrorDetail ?? _data.Error ?? string.Empty;
         }
         else
         {
@@ -131,10 +131,10 @@ public sealed partial class ProviderDetailPage : Page
 
     private void OnCopyError(object sender, RoutedEventArgs e)
     {
-        if (_data?.Error != null)
+        if (_data?.HasError == true)
         {
             var dataPackage = new Windows.ApplicationModel.DataTransfer.DataPackage();
-            dataPackage.SetText(_data.Error);
+            dataPackage.SetText(_data.ErrorDetail ?? _data.Error ?? string.Empty);
             Windows.ApplicationModel.DataTransfer.Clipboard.SetContent(dataPackage);
         }
     }

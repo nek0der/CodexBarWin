@@ -62,7 +62,7 @@ public sealed partial class ProviderCard : UserControl
 
         // Check state
         var isLoading = Data.IsLoading;
-        var hasError = Data.HasError && Data.Session == null;
+        var hasError = Data.HasError;
 
         // Update status indicator
         StatusNormal.Visibility = Visibility.Collapsed;
@@ -90,8 +90,6 @@ public sealed partial class ProviderCard : UserControl
         if (hasAnyData)
         {
             // Show data sections
-            ErrorPanel.Visibility = Visibility.Collapsed;
-
             // Update labels based on provider
             SessionLabelText.Text = Data.SessionLabel;
             WeeklyLabelText.Text = Data.WeeklyLabel;
@@ -121,13 +119,25 @@ public sealed partial class ProviderCard : UserControl
             {
                 WeeklySection.Visibility = Visibility.Collapsed;
             }
+
+            // Show error message if there's an error (even with cached data)
+            if (hasError)
+            {
+                ErrorPanel.Visibility = Visibility.Visible;
+                ErrorText.Text = Data.Error ?? "Failed to refresh";
+            }
+            else
+            {
+                ErrorPanel.Visibility = Visibility.Collapsed;
+            }
         }
         else if (hasError)
         {
-            // No data and error: show error panel
+            // No data and error: show error panel only
             SessionSection.Visibility = Visibility.Collapsed;
             WeeklySection.Visibility = Visibility.Collapsed;
             ErrorPanel.Visibility = Visibility.Visible;
+            ErrorText.Text = Data.Error ?? "Failed to load";
         }
         else
         {

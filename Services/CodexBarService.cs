@@ -198,13 +198,12 @@ public class CodexBarService : ICodexBarService
             }
 
             // Command failed
-            _logger.LogDebug("{Provider} failed: {Error}", provider, result.Error);
+            _logger.LogDebug("{Provider} failed: {Error} (exit code {ExitCode})", provider, result.Error, result.ExitCode);
             return new UsageData
             {
                 Provider = provider,
-                Error = string.IsNullOrWhiteSpace(result.Error)
-                    ? $"Command failed (exit code {result.ExitCode})"
-                    : result.Error.Trim(),
+                Error = GetErrorMessage(result.ExitCode, result.Error),
+                ErrorDetail = result.Error,
                 FetchedAt = DateTime.UtcNow
             };
         }
@@ -215,6 +214,7 @@ public class CodexBarService : ICodexBarService
             {
                 Provider = provider,
                 Error = "Request timed out",
+                ErrorDetail = "Request timed out (exceeded configured timeout)",
                 FetchedAt = DateTime.UtcNow
             };
         }
@@ -225,6 +225,7 @@ public class CodexBarService : ICodexBarService
             {
                 Provider = provider,
                 Error = "Unexpected error occurred",
+                ErrorDetail = $"{ex.GetType().Name}: {ex.Message}\n{ex.StackTrace}",
                 FetchedAt = DateTime.UtcNow
             };
         }
@@ -274,6 +275,31 @@ public class CodexBarService : ICodexBarService
             _logger.LogError(ex, "Failed to parse usage JSON for {Provider}", provider);
             return null;
         }
+    }
+
+    /// <summary>
+    /// Gets user-friendly error message based on CodexBar CLI exit code.
+    /// </summary>
+    /// <param name="exitCode">Exit code from CLI</param>
+    /// <param name="stderr">Standard error output (unused, kept for future use)</param>
+    /// <returns>Localized error message</returns>
+    internal static string GetErrorMessage(int exitCode, string stderr)
+    {
+        // CodexBar CLI exit codes (from https://github.com/steipete/CodexBar/blob/main/docs/cli.md)
+        // 0: Success
+        // 1: Unexpected failure
+        // 2: Provider not found (binary not in PATH)
+        // 3: Parse/format error
+        // 4: CLI timeout
+
+        return exitCode switch
+        {
+            2 => "Provider binary not found in PATH",
+            3 => "Failed to parse provider response",
+            4 => "CLI request timed out",
+            1 => "Unexpected error occurred",
+            _ => $"Command failed (exit code {exitCode})"
+        };
     }
 
     private List<UsageData> ParseUsageJsonArray(string json)

@@ -20,6 +20,7 @@
             <RowDefinition Height="Auto"/>  <!-- Header: Icon, Name, Status indicator -->
             <RowDefinition Height="Auto"/>  <!-- Session bar section -->
             <RowDefinition Height="Auto"/>  <!-- Weekly bar section -->
+            <RowDefinition Height="Auto"/>  <!-- Error message -->
         </Grid.RowDefinitions>
 
         <!-- Header: Icon, Name, Status indicator -->
@@ -176,18 +177,17 @@
             </Grid>
         </Grid>
 
-        <!-- Error message overlay (shown when error and no data) -->
-        <Grid Grid.Row="1" Grid.RowSpan="2" x:Name="ErrorPanel" Visibility="Collapsed" MinHeight="40">
-            <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+        <!-- Error message (shown when error occurs, even with cached data) -->
+        <Grid Grid.Row="3" x:Name="ErrorPanel" Visibility="Collapsed" Margin="0,4,0,0">
+            <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
                 <FontIcon
                     FontFamily="Segoe Fluent Icons"
                     Glyph="&#xE7BA;"
-                    FontSize="12"
+                    FontSize="11"
                     Foreground="{ThemeResource SystemFillColorCautionBrush}"/>
                 <TextBlock
                     x:Name="ErrorText"
-                    Text="Failed to load"
-                    Style="{StaticResource CaptionTextBlockStyle}"
+                    FontSize="10"
                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
             </StackPanel>
         </Grid>

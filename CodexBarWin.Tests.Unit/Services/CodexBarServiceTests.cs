@@ -312,4 +312,150 @@ public class CodexBarServiceTests
     }
 
     #endregion
+
+    #region GetErrorMessage Tests
+
+    [TestMethod]
+    public void GetErrorMessage_ExitCode0_ReturnsGenericMessage()
+    {
+        // Arrange
+        var exitCode = 0;
+        var stderr = "";
+
+        // Act
+        var result = CodexBarService.GetErrorMessage(exitCode, stderr);
+
+        // Assert
+        result.Should().Be("Command failed (exit code 0)");
+    }
+
+    [TestMethod]
+    public void GetErrorMessage_ExitCode1_ReturnsUnexpectedErrorMessage()
+    {
+        // Arrange
+        var exitCode = 1;
+        var stderr = "";
+
+        // Act
+        var result = CodexBarService.GetErrorMessage(exitCode, stderr);
+
+        // Assert
+        result.Should().Be("Unexpected error occurred");
+    }
+
+    [TestMethod]
+    public void GetErrorMessage_ExitCode2_ReturnsProviderNotFoundMessage()
+    {
+        // Arrange
+        var exitCode = 2;
+        var stderr = "";
+
+        // Act
+        var result = CodexBarService.GetErrorMessage(exitCode, stderr);
+
+        // Assert
+        result.Should().Be("Provider binary not found in PATH");
+    }
+
+    [TestMethod]
+    public void GetErrorMessage_ExitCode3_ReturnsParseErrorMessage()
+    {
+        // Arrange
+        var exitCode = 3;
+        var stderr = "";
+
+        // Act
+        var result = CodexBarService.GetErrorMessage(exitCode, stderr);
+
+        // Assert
+        result.Should().Be("Failed to parse provider response");
+    }
+
+    [TestMethod]
+    public void GetErrorMessage_ExitCode4_ReturnsTimeoutMessage()
+    {
+        // Arrange
+        var exitCode = 4;
+        var stderr = "";
+
+        // Act
+        var result = CodexBarService.GetErrorMessage(exitCode, stderr);
+
+        // Assert
+        result.Should().Be("CLI request timed out");
+    }
+
+    [TestMethod]
+    public void GetErrorMessage_UnknownExitCode_ReturnsGenericMessage()
+    {
+        // Arrange
+        var exitCode = 99;
+        var stderr = "";
+
+        // Act
+        var result = CodexBarService.GetErrorMessage(exitCode, stderr);
+
+        // Assert
+        result.Should().Be("Command failed (exit code 99)");
+    }
+
+    [TestMethod]
+    public void GetErrorMessage_WithStderr_IgnoresStderr()
+    {
+        // Arrange
+        var exitCode = 2;
+        var stderr = "claude: command not found";
+
+        // Act
+        var result = CodexBarService.GetErrorMessage(exitCode, stderr);
+
+        // Assert
+        result.Should().Be("Provider binary not found in PATH");
+    }
+
+    [TestMethod]
+    public void GetErrorMessage_WithDebugLogs_IgnoresStderr()
+    {
+        // Arrange
+        var exitCode = 1;
+        var stderr = @"2026-01-25T12:50:47+0900 debug com.steipete.codexbar.gemini-probe: expiry=2026-01-24 20:14:58 +0000
+2026-01-25T12:50:47+0900 info com.steipete.codexbar.gemini-probe: Token expired
+Error: Gemini API error: Could not find Gemini CLI OAuth configuration";
+
+        // Act
+        var result = CodexBarService.GetErrorMessage(exitCode, stderr);
+
+        // Assert
+        result.Should().Be("Unexpected error occurred");
+    }
+
+    [TestMethod]
+    public void GetErrorMessage_WithAnyStderr_ReturnsOnlyExitCodeMessage()
+    {
+        // Arrange
+        var exitCode = 3;
+        var stderr = "Error: Claude OAuth token expired. Run `claude` to refresh.";
+
+        // Act
+        var result = CodexBarService.GetErrorMessage(exitCode, stderr);
+
+        // Assert
+        result.Should().Be("Failed to parse provider response");
+    }
+
+    [TestMethod]
+    public void GetErrorMessage_WithEmptyStderr_ReturnsExitCodeMessage()
+    {
+        // Arrange
+        var exitCode = 4;
+        var stderr = "";
+
+        // Act
+        var result = CodexBarService.GetErrorMessage(exitCode, stderr);
+
+        // Assert
+        result.Should().Be("CLI request timed out");
+    }
+
+    #endregion
 }
