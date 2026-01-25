@@ -53,7 +53,7 @@ MSIX packages provide automatic updates and a clean installation experience.
 2. Right-click the `.cer` file and select **Install Certificate**
 3. Select **Local Machine** (requires Administrator)
 4. Choose **Place all certificates in the following store**
-5. Click **Browse** and select **Trusted People**
+5. Click **Browse** and select **Trusted Root Certification Authorities**
 6. Click **OK** and **Finish**
 
 #### Step 2: Install the App
@@ -100,7 +100,7 @@ You need to install the certificate first (see Installation Step 1 above).
 
 #### "This app package is not signed with a trusted certificate" error
 
-The certificate was not installed to **Trusted People**. Uninstall the certificate and reinstall it to the correct store.
+The certificate was not installed to **Trusted Root Certification Authorities**. Uninstall the certificate and reinstall it to the correct store.
 
 #### Unable to install: "The package could not be installed"
 
