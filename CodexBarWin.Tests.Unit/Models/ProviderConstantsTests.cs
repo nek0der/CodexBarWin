@@ -80,7 +80,7 @@ public class ProviderConstantsTests
     }
 
     [TestMethod]
-    [DataRow("claude", "cli")]
+    [DataRow("claude", "oauth")]
     [DataRow("codex", "cli")]
     [DataRow("gemini", "cli")]
     public void GetSource_ValidProvider_ReturnsCorrectSource(string providerId, string expectedSource)
@@ -106,8 +106,8 @@ public class ProviderConstantsTests
     public void GetSource_CaseInsensitive()
     {
         // Act & Assert
-        ProviderConstants.GetSource("CLAUDE").Should().Be("cli");
-        ProviderConstants.GetSource("Claude").Should().Be("cli");
-        ProviderConstants.GetSource("claude").Should().Be("cli");
+        ProviderConstants.GetSource("CLAUDE").Should().Be("oauth");
+        ProviderConstants.GetSource("Claude").Should().Be("oauth");
+        ProviderConstants.GetSource("claude").Should().Be("oauth");
     }
 }

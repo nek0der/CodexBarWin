@@ -65,7 +65,7 @@ public static class ProviderConstants
         var normalized = ValidateAndNormalize(providerId);
         return normalized switch
         {
-            "claude" => "cli",
+            "claude" => "oauth",
             "codex" => "cli",
             "gemini" => "cli",
             _ => throw new InvalidOperationException($"Unhandled provider: {normalized}")
