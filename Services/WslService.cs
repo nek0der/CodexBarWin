@@ -76,7 +76,7 @@ public class WslService : IWslService
             var error = await errorTask;
 
             _logger.LogDebug("WSL command completed: {Command}, ExitCode={ExitCode}",
-                command.Substring(0, Math.Min(50, command.Length)), process.ExitCode);
+                command, process.ExitCode);
 
             return new WslResult
             {
