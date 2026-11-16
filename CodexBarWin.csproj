@@ -69,17 +69,17 @@
     <ProjectCapability Include="Msix" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.2" />
-    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.7463" />
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260101001" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="11.0.0" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2957" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.6.5" />
 
     <!-- MVVM -->
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.*" />
 
     <!-- DI -->
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.*" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="10.*" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.*" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="11.*" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="11.*" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="11.*" />
 
     <!-- System Tray -->
     <PackageReference Include="H.NotifyIcon.WinUI" Version="2.4.1" />
